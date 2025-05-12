@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_ODDS_API_KEY
+const API_KEY = import.meta.env.CHAVE
 const BASE_URL = 'https://api.the-odds-api.com/v4'
 
 export async function fetchSports() {
