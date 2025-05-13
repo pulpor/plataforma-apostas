@@ -58,8 +58,17 @@ export default function SportDetail() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+     <div className="p-6 bg-gradient-to-b from-blue-50 to-gray-100 min-h-screen">
+      <div className="mb-6">
+        <Link
+          to="/"
+          className="inline-block px-4 py-2 bg-blue-700 text-white rounded-full shadow hover:bg-blue-800 transition"
+        >
+          ← Voltar para o início
+        </Link>
+      </div>
       <div className="max-w-4xl mx-auto">
+        
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-3xl font-bold text-gray-800">
             Ligas para: <span className="text-blue-700">{formatSportName(sport)}</span>
