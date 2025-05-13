@@ -9,9 +9,9 @@ export default function AppRouter() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/sports" element={<Sports />} />
-        <Route path="/sports/:sport" element={<SportDetail />} />
-        <Route path="/match/:id" element={<MatchDetail />} />
+        <Route path="/esportes" element={<Sports />} />
+        <Route path="/esportes/:sport" element={<SportDetail />} />
+        <Route path="/partida/:id" element={<MatchDetail />} />
       </Routes>
     </Router>
   )

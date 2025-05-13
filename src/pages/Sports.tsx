@@ -1,29 +1,53 @@
-import { useContext } from 'react'
-import { SportsContext } from '../contexts/SportsContext'
-import { Link } from 'react-router-dom'
+import { useContext } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import SportsContext from '../contexts/SportsContext';
+import formatSportName from '../utils/formatSportName';
 
-export default function Sports() {
-  const { sports, loading } = useContext(SportsContext)
+function SportsPage() {
+  const { sports, loading } = useContext(SportsContext);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchTerm = searchParams.get('busca') || '';
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchParams(value ? { busca: value } : {});
+  };
+
+  const filteredSports = sports.filter((sport) =>
+    sport.key?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    sport.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold">Esportes Disponíveis</h2>
+    <div className="px-6 py-10 bg-gradient-to-b from-blue-50 to-gray-100 min-h-screen">
+      <h1 className="text-4xl font-extrabold text-center text-blue-800 mb-4">Esportes</h1>
+      <input
+        type="text"
+        placeholder="Buscar esporte"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="p-2 mb-6 border rounded-full w-full"
+      />
+
       {loading ? (
-        <p>Carregando esportes...</p>
+        <p className="text-center text-gray-500">Carregando...</p>
       ) : (
-        <ul className="mt-4 grid grid-cols-2 gap-4">
-          {sports.map((sport, index) => (
-            <li key={index}>
-              <Link
-                to={`/sports/${sport.toLowerCase().replace(/\s/g, '-')}`}
-                className="block bg-blue-100 hover:bg-blue-200 p-4 rounded shadow"
-              >
-                {sport}
-              </Link>
-            </li>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {filteredSports.map((sportKey) => (
+            <Link
+              key={sportKey}
+              to={`/sports/${sportKey}`}
+              className="block p-6 bg-white rounded-2xl shadow-md hover:shadow-lg hover:bg-blue-50 transition text-center"
+            >
+              <span className="text-blue-700 text-lg font-semibold">
+                {formatSportName(sportKey)}
+              </span>
+            </Link>
           ))}
-        </ul>
+        </div>
       )}
     </div>
-  )
+  );
 }
+
+export default SportsPage;
