@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import SportsContext from '../contexts/SportsContext';
 import formatSportName from '../utils/formatSportName';
@@ -6,12 +6,21 @@ import formatSportName from '../utils/formatSportName';
 function SportsPage() {
   const { sports, loading } = useContext(SportsContext);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [search, setSearch] = useState("")
-  const searchTerm = searchParams.get('busca') || '';
+  const [search, setSearch] = useState(searchParams.get('busca') || ""); // Inicializa com o valor da URL
+  const searchTerm = searchParams.get('busca') || ''; // Obtém o termo de busca da URL
+
+  // Atualiza o searchParams quando o estado de pesquisa muda
+  useEffect(() => {
+    if (search) {
+      setSearchParams({ busca: search });
+    } else {
+      setSearchParams({});
+    }
+  }, [search, setSearchParams]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchParams(value ? { busca: value } : {});
+    setSearch(value); // Atualiza o valor de pesquisa no estado
   };
 
   const sportNames: Record<string, string> = {
@@ -52,7 +61,7 @@ function SportsPage() {
       <input
         type="text"
         placeholder="Buscar esporte"
-        value={searchTerm}
+        value={search}
         onChange={handleSearchChange}
         className="p-2 mb-6 border rounded-full w-full"
       />

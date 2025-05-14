@@ -1,19 +1,32 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import { SportsContext } from '../contexts/SportsContext';
+import SportsContext from '../contexts/SportsContext';
 
-import { Link, useSearchParams } from 'react-router-dom';
+interface MatchDetails {
+  id: string;
+  sport_key: string;
+  home_team: string;
+  away_team: string;
+  commence_time: string;
+  bookmakers?: {
+    title: string;
+    markets: {
+      key: string;
+      outcomes: { name: string; price: number }[]; 
+    }[];
+  }[];
+}
 
 export default function MatchDetail() {
   const { id } = useParams();
   const { upcomingMatches } = useContext(SportsContext);
 
-  const [matchDetails, setMatchDetails] = useState<any | null>(null);
+  const [matchDetails, setMatchDetails] = useState<MatchDetails | null>(null);
 
   useEffect(() => {
     if (id && upcomingMatches.length > 0) {
       const match = upcomingMatches.find((match) => match.id === id);
-      setMatchDetails(match);
+      setMatchDetails(match || null);
     }
   }, [id, upcomingMatches]);
 
@@ -47,15 +60,15 @@ export default function MatchDetail() {
           <div className="grid sm:grid-cols-3 gap-6">
             <div className="p-4 bg-blue-100 rounded-lg shadow">
               <h4 className="font-semibold text-gray-700">Odds Casa</h4>
-              <p className="text-xl text-blue-700">{matchDetails.bookmakers[0]?.markets[0]?.outcomes[0]?.price || 'N/A'}</p>
+              <p className="text-xl text-blue-700">{matchDetails.bookmakers?.[0]?.markets[0]?.outcomes[0]?.price || 'N/A'}</p>
             </div>
             <div className="p-4 bg-yellow-100 rounded-lg shadow">
               <h4 className="font-semibold text-gray-700">Empate</h4>
-              <p className="text-xl text-yellow-700">{matchDetails.bookmakers[0]?.markets[0]?.outcomes[1]?.price || 'N/A'}</p>
+              <p className="text-xl text-yellow-700">{matchDetails.bookmakers?.[0]?.markets[0]?.outcomes[1]?.price || 'N/A'}</p>
             </div>
             <div className="p-4 bg-red-100 rounded-lg shadow">
               <h4 className="font-semibold text-gray-700">Odds Visitante</h4>
-              <p className="text-xl text-red-700">{matchDetails.bookmakers[0]?.markets[0]?.outcomes[2]?.price || 'N/A'}</p>
+              <p className="text-xl text-red-700">{matchDetails.bookmakers?.[0]?.markets[0]?.outcomes[2]?.price || 'N/A'}</p>
             </div>
           </div>
 
@@ -71,4 +84,3 @@ export default function MatchDetail() {
     </div>
   );
 }
-

@@ -1,12 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
-import { SportsContext } from '../contexts/SportsContext'; // Contexto para acessar as informações
+import SportsContext from '../contexts/SportsContext';
 
-// Função para formatar o nome do esporte
 function formatSportName(sport: string | undefined): string {
   if (!sport) return '';
 
-  // Mapa de esportes personalizados para facilitar a leitura
   const map: Record<string, string> = {
     'americanfootball_nfl': 'NFL (Futebol Americano)',
     'americanfootball_ncaaf': 'NCAA (Universitário)',
@@ -16,16 +14,24 @@ function formatSportName(sport: string | undefined): string {
   };
 
   return map[sport] || sport
-    .replace(/_/g, ' ') // Substitui os underlines por espaços
-    .split(' ') // Divide a string em palavras
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza a primeira letra de cada palavra
-    .join(' '); // Junta as palavras
+    .replace(/_/g, ' ')
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' '); 
 }
 
 export default function SportDetail() {
-  const { sport } = useParams(); // Pegando o esporte da URL
-  const { upcomingMatches } = useContext(SportsContext); // Contexto para acessar as informações
-  const [matches, setMatches] = useState<any[]>([]); // Estado para armazenar as partidas
+  const { sport } = useParams(); 
+  const { upcomingMatches } = useContext(SportsContext); 
+  interface Match {
+    id: string;
+    home_team: string;
+    away_team: string;
+    commence_time: string;
+    sport_key: string;
+  }
+
+  const [matches, setMatches] = useState<Match[]>([]); // Estado para armazenar as partidas
 
   useEffect(() => {
     if (sport) {
@@ -33,11 +39,8 @@ export default function SportDetail() {
       console.log("Matches disponíveis:", upcomingMatches);
 
       const filteredMatches = upcomingMatches.filter((match) => {
-        // Normalizando para garantir que comparações sejam feitas sem diferença de maiúsculas/minúsculas ou underscores
         const sportKeyNormalized = match.sport_key.toLowerCase().replace(/_/g, '');
         const sportParamNormalized = sport.toLowerCase().replace(/_/g, '');
-
-        // Verificando se o nome do esporte da URL é um prefixo do nome da chave do esporte
         const isMatch = sportKeyNormalized.startsWith(sportParamNormalized);
         console.log(`Comparando "${sportKeyNormalized}" com "${sportParamNormalized}": ${isMatch}`);
 
